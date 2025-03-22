@@ -1,0 +1,3 @@
+Bulbasaur,318,0.7,true
+Ivysaur,405,1.0,true
+Venusaur,525,2.0,false

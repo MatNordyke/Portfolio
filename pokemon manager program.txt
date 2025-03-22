@@ -1,0 +1,268 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
+
+class Pokemon {
+    private String name;
+    private int baseStatTotal;
+    private float height; // Adding a float attribute for height
+    private boolean isStarter; // Adding a boolean attribute for starter status
+
+    public Pokemon(String name, int baseStatTotal, float height, boolean isStarter) {
+        this.name = name;
+        this.baseStatTotal = baseStatTotal;
+        this.height = height;
+        this.isStarter = isStarter;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getBaseStatTotal() {
+        return baseStatTotal;
+    }
+
+    public float getHeight() {
+        return height;
+    }
+
+    public boolean getIsStarter() {
+        return isStarter;
+    }
+
+    public void setName(String newName) {
+        this.name = newName;
+    }
+
+    public void setBaseStatTotal(int newTotal) {
+        this.baseStatTotal = newTotal;
+    }
+
+    public void setHeight(float newHeight) {
+        this.height = newHeight;
+    }
+
+    public void setIsStarter(boolean newIsStarter) {
+        this.isStarter = newIsStarter;
+    }
+
+    public void displayDetails() {
+        System.out.println("Name: " + name + ", Base Stat Total: " + baseStatTotal +
+                ", Height: " + height + "m, Starter: " + (isStarter ? "Yes" : "No"));
+    }
+}
+
+public class PokemonManager {
+    private static final int MAX_POKEMON = 10;
+    private static ArrayList<Pokemon> pokemonList = new ArrayList<>(); // List of Pokémon
+    private static HashMap<String, Integer> typeCounts = new HashMap<>(); // Dictionary for Pokémon types
+    private static Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        while (true) {
+            displayMenu();
+            int choice = getIntInput("Enter your choice: ");
+            switch (choice) {
+                case 1:
+                    tryMethod(PokemonManager::addPokemon);
+                    break;
+                case 2:
+                    tryMethod(PokemonManager::changePokemon);
+                    break;
+                case 3:
+                    tryMethod(PokemonManager::deletePokemon);
+                    break;
+                case 4:
+                    tryMethod(PokemonManager::printOnePokemon);
+                    break;
+                case 5:
+                    tryMethod(PokemonManager::printAllPokemon);
+                    break;
+                case 6:
+                    tryMethod(PokemonManager::resetAllPokemon);
+                    break;
+                case 7:
+                    tryMethod(PokemonManager::massLoadPokemon);
+                    break;
+                case 8:
+                    System.out.println("Exiting program...");
+                    return;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+
+    private static void displayMenu() {
+        System.out.println("\n=== Pokémon Management Menu ===");
+        System.out.println("1. Add Pokémon");
+        System.out.println("2. Change Pokémon");
+        System.out.println("3. Delete Pokémon");
+        System.out.println("4. Print 1 Pokémon");
+        System.out.println("5. Print All Pokémon");
+        System.out.println("6. Reset All Pokémon");
+        System.out.println("7. Mass Load Pokémon from File");
+        System.out.println("8. Exit Program");
+    }
+
+    private static void addPokemon() {
+        if (pokemonList.size() < MAX_POKEMON) {
+            String name = getStringInput("Enter the name of the Pokémon to add: ");
+            int baseStatTotal = getIntInput("Enter the base stat total for " + name + ": ");
+            float height = getFloatInput("Enter the height (in meters) for " + name + ": ");
+            boolean isStarter = getBooleanInput("Is this Pokémon a starter? (true/false): ");
+
+            Pokemon newPokemon = new Pokemon(name, baseStatTotal, height, isStarter);
+            pokemonList.add(newPokemon);
+
+            System.out.println(name + " has been added.");
+        } else {
+            System.out.println("The Pokémon list is full. Cannot add more.");
+        }
+    }
+
+    private static void changePokemon() {
+        int index = getIntInput("Enter the index of the Pokémon to change (1 to " + pokemonList.size() + "): ");
+        if (isValidIndex(index)) {
+            Pokemon pokemon = pokemonList.get(index - 1);
+            String newName = getStringInput("Enter the new name for Pokémon " + index + ": ");
+            int newStatTotal = getIntInput("Enter the new base stat total for " + newName + ": ");
+            float newHeight = getFloatInput("Enter the new height (in meters) for " + newName + ": ");
+            boolean newIsStarter = getBooleanInput("Is this Pokémon a starter? (true/false): ");
+
+            pokemon.setName(newName);
+            pokemon.setBaseStatTotal(newStatTotal);
+            pokemon.setHeight(newHeight);
+            pokemon.setIsStarter(newIsStarter);
+
+            System.out.println("Pokémon " + index + " has been updated.");
+        } else {
+            System.out.println("Invalid index. No changes made.");
+        }
+    }
+
+    private static void deletePokemon() {
+        int index = getIntInput("Enter the index of the Pokémon to delete (1 to " + pokemonList.size() + "): ");
+        if (isValidIndex(index)) {
+            pokemonList.remove(index - 1);
+            System.out.println("Pokémon " + index + " has been deleted.");
+        } else {
+            System.out.println("Invalid index. No deletion occurred.");
+        }
+    }
+
+    private static void printOnePokemon() {
+        int index = getIntInput("Enter the index of the Pokémon to print (1 to " + pokemonList.size() + "): ");
+        if (isValidIndex(index)) {
+            Pokemon pokemon = pokemonList.get(index - 1);
+            pokemon.displayDetails();
+        } else {
+            System.out.println("Invalid index. No Pokémon to print.");
+        }
+    }
+
+    private static void printAllPokemon() {
+        if (!pokemonList.isEmpty()) {
+            System.out.println("=== List of All Pokémon ===");
+            for (int i = 0; i < pokemonList.size(); i++) {
+                System.out.print((i + 1) + ". ");
+                pokemonList.get(i).displayDetails();
+            }
+        } else {
+            System.out.println("No Pokémon available in the list.");
+        }
+    }
+
+    private static void resetAllPokemon() {
+        pokemonList.clear();
+        System.out.println("All Pokémon have been reset.");
+    }
+
+    private static void massLoadPokemon() { //use file pokemon.txt for massload
+        System.out.print("Enter the file name to load Pokémon from: ");
+        String fileName = scanner.nextLine();
+        try (Scanner fileScanner = new Scanner(new File(fileName))) {
+            while (fileScanner.hasNextLine() && pokemonList.size() < MAX_POKEMON) {
+                String line = fileScanner.nextLine().trim();
+                String[] parts = line.split(",");
+                if (parts.length != 4) {
+                    throw new IllegalArgumentException("Invalid line format: " + line);
+                }
+                String name = parts[0].trim();
+                int baseStatTotal = Integer.parseInt(parts[1].trim());
+                float height = Float.parseFloat(parts[2].trim());
+                boolean isStarter = Boolean.parseBoolean(parts[3].trim());
+
+                Pokemon newPokemon = new Pokemon(name, baseStatTotal, height, isStarter);
+                pokemonList.add(newPokemon);
+                System.out.println(name + " has been loaded.");
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("An error occurred while loading Pokémon: " + e.getMessage());
+        }
+    }
+
+    private static int getIntInput(String prompt) {
+        while (true) {
+            try {
+                System.out.print(prompt);
+                return Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter an integer.");
+            }
+        }
+    }
+
+    private static float getFloatInput(String prompt) {
+        while (true) {
+            try {
+                System.out.print(prompt);
+                return Float.parseFloat(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a decimal number.");
+            }
+        }
+    }
+
+    private static boolean getBooleanInput(String prompt) {
+        while (true) {
+            try {
+                System.out.print(prompt);
+                return Boolean.parseBoolean(scanner.nextLine().trim());
+            } catch (Exception e) {
+                System.out.println("Invalid input. Please enter true or false.");
+            }
+        }
+    }
+
+    private static String getStringInput(String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String input = scanner.nextLine().trim();
+            if (input.matches(".*\\d.*")) {
+                System.out.println("Invalid input. Names cannot contain numbers. Please enter a valid name.");
+            } else if (input.isEmpty()) {
+                System.out.println("Invalid input. Names cannot be empty. Please enter a valid name.");
+            } else {
+                return input;
+            }
+        }
+    }
+
+    private static boolean isValidIndex(int index) {
+        return index >= 1 && index <= pokemonList.size();
+    }
+
+    private static void tryMethod(Runnable method) {
+        try {
+            method.run();
+        } catch (Exception e) {
+            System.out.println("An error occurred: " + e.getMessage());
+        }
+    }
+}

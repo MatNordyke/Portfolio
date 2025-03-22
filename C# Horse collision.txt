@@ -1,0 +1,54 @@
+using System;
+
+public class Entity
+{
+    public float Weight { get; set; }
+    public float Armor { get; set; }
+    public float Velocity { get; set; }
+
+    public float GetCombatValue() => Weight + Armor + Velocity;
+}
+
+public class Horse : Entity { }
+
+public class Player : Entity { }
+
+public class CollisionInteraction
+{
+    public static void Main(string[] args)
+    {
+        Horse horse = new Horse { Weight = 500, Armor = 10, Velocity = 20 };
+        Player player = new Player { Weight = 150, Armor = 20, Velocity = 10 };
+
+        DetermineDamageAndStatus(horse, player);
+    }
+
+    public static void DetermineDamageAndStatus(Horse horse, Player player)
+    {
+        float horseCombatValue = horse.GetCombatValue();
+        float playerCombatValue = player.GetCombatValue();
+
+        if (horseCombatValue > playerCombatValue * 1.35f)
+        {
+            float damage = CalculateDamage(horse, player);
+            bool knockedProne = CheckKnockProne(horse, player);
+        }
+    }
+
+    public static float CalculateDamage(Horse horse, Player player)
+    {
+        float impactForce = horse.Weight * horse.Velocity; // Basic momentum formula
+        float armorReduction = player.Armor * 0.2f; // Armor reduces damage less drastically
+        float baseDamage = (impactForce * 0.05f) - armorReduction;
+
+        return Math.Max(baseDamage, 0);
+    }
+
+    public static bool CheckKnockProne(Horse horse, Player player)
+    {
+        float horseMomentum = horse.Weight * horse.Velocity;
+        float playerMomentum = player.Weight * player.Velocity;
+
+        return horseMomentum > playerMomentum * 1.5f; // Momentum-based knockdown check
+    }
+}

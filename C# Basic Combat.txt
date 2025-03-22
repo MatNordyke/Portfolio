@@ -1,0 +1,110 @@
+Here is your code with all comments removed:  
+
+```csharp
+public enum WeaponType
+{
+    Slashing,
+    Piercing,
+    Bludgeoning
+}
+
+public class Player
+{
+    public float MovementVelocity { get; set; }
+    public float WeaponLength { get; set; }
+    public WeaponType WeaponType { get; set; }
+}
+
+public class Opponent
+{
+    public float MovementVelocity { get; set; }
+    public float ArmorPlate { get; set; }
+}
+
+public class WeaponSwing
+{
+    private const float SlashingArmorModifier = 0.10f;
+    private const float PiercingArmorModifier = 0.45f;
+    private const float BludgeoningArmorModifier = 1.50f;
+
+    public static void Main(string[] args)
+    {
+        Player player = new Player
+        {
+            MovementVelocity = 5.0f,
+            WeaponLength = 1.5f,
+            WeaponType = WeaponType.Slashing
+        };
+
+        Opponent opponent = new Opponent
+        {
+            MovementVelocity = 3.0f,
+            ArmorPlate = 0.25f
+        };
+
+        float swingVelocity = CalculateWeaponSwingVelocity(player, opponent, 90.0f);
+        float damage = CalculateDamage(player, opponent, 90.0f);
+    }
+
+    public static float CalculateWeaponSwingVelocity(Player player, Opponent opponent, float swingAngle)
+    {
+        float playerSwingVelocity = player.MovementVelocity + player.WeaponLength / 2;
+        float opponentSwingVelocity = opponent.MovementVelocity;
+        float relativeVelocity = playerSwingVelocity - opponentSwingVelocity;
+        float angleModifier = GetSwingAngleModifier(swingAngle);
+        float weaponSurfaceModifier = GetWeaponSurfaceModifier(swingAngle);
+        return relativeVelocity * angleModifier * weaponSurfaceModifier;
+    }
+
+    public static float CalculateDamage(Player player, Opponent opponent, float swingAngle)
+    {
+        float baseDamage = 100.0f;
+        float damageMultiplier = GetSwingAngleModifier(swingAngle);
+        float armorMitigation = 0;
+        switch (player.WeaponType)
+        {
+            case WeaponType.Slashing:
+                armorMitigation = opponent.ArmorPlate * SlashingArmorModifier;
+                break;
+            case WeaponType.Piercing:
+                armorMitigation = opponent.ArmorPlate * PiercingArmorModifier;
+                break;
+            case WeaponType.Bludgeoning:
+                armorMitigation = opponent.ArmorPlate * BludgeoningArmorModifier;
+                break;
+        }
+        float finalDamage = baseDamage * damageMultiplier - armorMitigation;
+        return Math.Max(finalDamage, 0);
+    }
+
+    public static float GetSwingAngleModifier(float swingAngle)
+    {
+        if (swingAngle < 60.0f)
+        {
+            return 0.5f;
+        }
+        else if (swingAngle >= 60.0f && swingAngle <= 75.0f)
+        {
+            return 1.25f;
+        }
+        else
+        {
+            return 0.75f;
+        }
+    }
+
+    public static float GetWeaponSurfaceModifier(float swingAngle)
+    {
+        if (swingAngle >= 60.0f && swingAngle <= 75.0f)
+        {
+            return 1.5f;
+        }
+        else
+        {
+            return 0.75f;
+        }
+    }
+}
+```
+
+Let me know if you'd like it reformatted, further simplified, or adapted for something else.
