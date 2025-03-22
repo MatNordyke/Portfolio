@@ -1,0 +1,1 @@
+The files contained in this repository are a collection of random programming projects/portfolio pieces meant to display an understanding of the mathematics and logic behind different Object based programing languages including java, C#, and C++.
